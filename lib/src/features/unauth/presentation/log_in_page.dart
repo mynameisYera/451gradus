@@ -70,7 +70,10 @@ class _LogInPageState extends State<LogInPage> {
               const SizedBox(height: 20),
 
               // continue button
-              CustomButton(onTap: () {}, btnText: 'Continue'),
+              CustomButton(
+                color: AppColors.buttonColor,
+                text: 'Continue',
+              ),
               const SizedBox(height: 20),
 
               Row(

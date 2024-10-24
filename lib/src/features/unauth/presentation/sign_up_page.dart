@@ -154,7 +154,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 10),
 
                 // button
-                CustomButton(onTap: () {}, btnText: "Agree to continue")
+                CustomButton(
+                  color: AppColors.buttonColor,
+                  text: 'Continue',
+                )
               ],
             ),
           ),

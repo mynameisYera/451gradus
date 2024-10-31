@@ -251,11 +251,19 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        EnterQuizWidget(
-                          bookName: currentBook['bookName'],
-                          round: 5,
-                          questions: 25,
-                          image: 'assets/images/Frame.png',
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => QuizPage()));
+                          },
+                          child: EnterQuizWidget(
+                            bookName: currentBook['bookName'],
+                            round: 5,
+                            questions: 25,
+                            image: 'assets/images/Frame.png',
+                          ),
                         ),
                         SizedBox(
                           height: 20,
@@ -297,38 +305,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Enter Quiz',
-                        style: TextStyles.headerText,
-                      ),
-                      Text(
-                        'See all',
-                        style: TextStyles.miniText
-                            .copyWith(color: AppColors.buttonColor),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => QuizPage()));
-                    },
-                    child: EnterQuizWidget(
-                      bookName: currentBook['bookName'],
-                      round: 5,
-                      questions: 25,
-                      image: 'assets/images/Frame.png',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  
                 ],
               ),
             ),
@@ -359,24 +336,24 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<void> _loadQuestionsForRound() async {
-  final doc = await FirebaseFirestore.instance.collection('quiz').doc('game1').get();
-  final data = doc.data();
+    final doc =
+        await FirebaseFirestore.instance.collection('quiz').doc('game1').get();
+    final data = doc.data();
 
-  if (data != null && data.containsKey('round$_currentRound')) {
-    final roundData = Map<String, dynamic>.from(data['round$_currentRound']);
-    final sortedQuestions = roundData.keys.toList()
-      ..sort(); 
-    
-    setState(() {
-      _currentQuestions = sortedQuestions.map((key) => roundData[key].toString()).toList();
-      _currentQuestionIndex = 0;
-      _allAnswers['round$_currentRound'] = {}; 
-    });
-  } else {
-    print("No more rounds available.");
+    if (data != null && data.containsKey('round$_currentRound')) {
+      final roundData = Map<String, dynamic>.from(data['round$_currentRound']);
+      final sortedQuestions = roundData.keys.toList()..sort();
+
+      setState(() {
+        _currentQuestions =
+            sortedQuestions.map((key) => roundData[key].toString()).toList();
+        _currentQuestionIndex = 0;
+        _allAnswers['round$_currentRound'] = {};
+      });
+    } else {
+      print("No more rounds available.");
+    }
   }
-}
-
 
   void _handleNextButton(BuildContext context) {
     if (_currentQuestionIndex < _currentQuestions.length - 1) {
@@ -398,7 +375,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<void> _submitAnswers() async {
-     await FirebaseFirestore.instance.collection('answers').doc('game1').set({
+    await FirebaseFirestore.instance.collection('answers').doc('game1').set({
       'round$_currentRound': _allAnswers['round$_currentRound'],
     }, SetOptions(merge: true));
   }
@@ -416,22 +393,29 @@ class _QuizPageState extends State<QuizPage> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.grey,
-        title: Text("Quiz Completed", style: TextStyles.headerText,),
-        content: Text("You've finished all rounds!", style: TextStyles.simpleText,),
+        title: Text(
+          "Quiz Completed",
+          style: TextStyles.headerText,
+        ),
+        content: Text(
+          "You've finished all rounds!",
+          style: TextStyles.simpleText,
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: CustomButton(onTap: () {
-              Navigator.pop(context);
-            }, btnText: "OK"),
+            child: CustomButton(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                btnText: "OK"),
           ),
         ],
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -451,7 +435,8 @@ class _QuizPageState extends State<QuizPage> {
                   return QuizQuestionWidget(
                     question: _currentQuestions[index],
                     onAnswerChanged: (answer) {
-                      _allAnswers['round$_currentRound']!['question${index + 1}'] = answer;
+                      _allAnswers['round$_currentRound']![
+                          'question${index + 1}'] = answer;
                     },
                   );
                 },
@@ -468,8 +453,9 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ] else
               Center(
-                child: CircularProgressIndicator(color: AppColors.buttonColor,)
-              ),
+                  child: CircularProgressIndicator(
+                color: AppColors.buttonColor,
+              )),
           ],
         ),
       ),
